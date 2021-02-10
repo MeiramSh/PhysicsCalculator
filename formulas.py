@@ -17,7 +17,7 @@ class PhysicalQuantity:
         self.unit = unit
 
     def lonCapaNumber(number):
-        return format(number, '.2e').replace("e-0", "e-").replace('e+0', 'e').replace('e0', '')
+        return format(number, '.2e').replace("e-0", "e-").replace('e+0', 'e').replace('_eps0', '')
 
     def __str__(self):
         return f'{Charge.lonCapaNumber(self.value)} {self.unit}'
@@ -26,9 +26,9 @@ class PhysicalQuantity:
 class Electrostatics(PhysicalQuantity):
     def GaussLaw(Fl=None, q=None):
         if Fl is None:
-            return solve(Flux, lambda q: q/e0, q)
+            return solve(Flux, lambda q: q/_eps0, q)
         else:
-            return solve(Charge, lambda Fl: Fl*e0, Fl)
+            return solve(Charge, lambda Fl: Fl*_eps0, Fl)
 
 
 class Charge(Electrostatics):
@@ -52,16 +52,16 @@ class ElectricField(Electrostatics):
         self.unit = 'V/m'
 
     def definition(q1, r):
-        return solve(ElectricField, lambda q1, r: ke * q1 / r**2, q1, r)
+        return solve(ElectricField, lambda q1, r: _k * q1 / r**2, q1, r)
 
     def withinSphere(Q, R, r):
-        return solve(ElectricField, lambda Q, R, r: ke*Q*r/R**3, Q, R, r)
+        return solve(ElectricField, lambda Q, R, r: _k*Q*r/R**3, Q, R, r)
 
     def lineCharge(r, lam):
-        return solve(ElectricField, lambda r, lam: 2 * ke * lam / r, r, lam)
+        return solve(ElectricField, lambda r, lam: 2 * _k * lam / r, r, lam)
 
     def planeCharge(sigma):
-        return solve(ElectricField, lambda sigma: sigma(2*e0), sigma)
+        return solve(ElectricField, lambda sigma: sigma(2*_eps0), sigma)
 
 
 class Flux(Electrostatics):
